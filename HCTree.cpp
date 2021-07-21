@@ -15,13 +15,15 @@ void HCTree::build(const vector<int>& freqs) {
 	priority_queue<HCNode*> pq;
 
 	// add all nodes
-	for each (int i in freqs) {
+	cout << freqs.size() << endl;
+	for (unsigned int i = 0; i < freqs.size(); i++) {
+		cout << "letter " << i << endl;
 		// if letter has a frequency
 		if (freqs[i] != 0) {
 			// Make into node
 			HCNode* newNode = new HCNode(freqs[i], i);
 			// add node pointer to priority queue
-			pq.push(newNode);
+			pq.emplace(newNode);
 			// add node pointer to leaves
 			leaves[i] = newNode;
 		}
@@ -44,6 +46,8 @@ void HCTree::build(const vector<int>& freqs) {
 		pq.pop();
 		// Add their frequencies to a new internal node
 		HCNode* iNode = new HCNode(left->count + right->count,NULL);
+		
+		pq.push(iNode);
 
 		left->p = iNode;
 		right->p = iNode;
@@ -61,27 +65,26 @@ void HCTree::build(const vector<int>& freqs) {
 void HCTree::encode(byte symbol, ofstream& out) const {
 	// Find element in leaves
 	stack<int> retStack;
-	HCNode* curr;
-	for (size_t i = 0; i < leaves.size(); i++){
-		if (leaves[i]->symbol == symbol) {
-			curr = leaves[i];
-			break;
-		}
-	}
+	HCNode* curr = NULL;
+	byte i = (byte)symbol;
+	if (leaves[i] != NULL) {
+		curr = leaves[i];
 	
-	// Write code to Stack
-	while (curr->p != NULL) {
-		if (curr->p->c0 == curr) {
-			retStack.push(0);
-		} else {
-			retStack.push(1);
+		// Write code to Stack
+		while (curr->p != NULL) {
+			if (curr->p->c0 == curr) {
+				retStack.push(0);
+			}
+			else {
+				retStack.push(1);
+			}
+			curr = curr->p;
 		}
-		curr = curr->p;
-	}
-	// Using stack write code to out
-	while (!retStack.empty()) {
-		out << retStack.top();
-		retStack.pop();
+		// Using stack write code to out
+		while (!retStack.empty()) {
+			out << retStack.top();
+			retStack.pop();
+		}
 	}
 }
 

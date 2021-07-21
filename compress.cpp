@@ -1,11 +1,12 @@
-#include "HCTree.hpp"
 #include <iostream>
+#include "HCTree.hpp"
 
 using namespace std;
 
 int main(int argc, char** argv) {
-	if (argc != 2) {
-		cout << "This program requires 2 aruments!" << endl;
+	cout << "Executing compress..." << endl;
+	if (argc != 3) {
+		cout << "This program requires 2 arguments!" << endl;
 		return 1;
 	}
 
@@ -21,7 +22,7 @@ int main(int argc, char** argv) {
 	// read infile
 	int input;
 	if (infile.is_open()) {
-		while (input = infile.get()) {
+		while ((input = infile.get()) != EOF) {
 			freqs[input]++;
 		}
 	}
@@ -38,17 +39,16 @@ int main(int argc, char** argv) {
 
 	// Open outfile
 	ofstream outfile;
-	outfile.open(argv[2], ios::binary);
+	outfile.open(argv[2], ios::out);
 	// Write header for outfile (256 ints)
 	for (int i : freqs) {
 		outfile << i << endl;
 	}
 	// Write to the outfile using Huffman encoding
-	ifstream infile;
 	infile.open(argv[1], ios::binary);
 	
 	if (infile.is_open()) {
-		while (input = infile.get()) {
+		while ((input = infile.get()) != EOF) {
 			HTree->encode(input, outfile);
 		}
 	}
