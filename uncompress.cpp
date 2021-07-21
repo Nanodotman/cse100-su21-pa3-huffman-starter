@@ -45,13 +45,12 @@ int main(int argc, char** argv) {
 	int asciiVal;
 	char c;
 	if (infile.is_open()) {
-		while (infile.good()) {
+		while (infile.is_open()) {
 			asciiVal = HTree->decode(infile);
 			c = char(asciiVal);
 			outfile << c;
 		}
-	}
-	else {
+	} else {
 		cout << "Unable to open file";
 		return 1;
 	}
