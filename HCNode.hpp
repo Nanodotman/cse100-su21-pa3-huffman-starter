@@ -46,7 +46,7 @@ public:
  *  Possibly useful for debugging.
  */
 // shut the linker up
-ostream& operator<<(ostream&, const HCNode&) __attribute__((weak));
+ostream& operator<<(ostream&, const HCNode&){ __attribute__((weak));
 ostream& operator<<(ostream& stm, const HCNode& n) {
     stm << "[" << n.count << "," << (int) (n.symbol) << "]";
     return stm;
