@@ -12,8 +12,7 @@ using namespace std;
 *  and leaves[i] points to the leaf node containing byte i.
 */
 void HCTree::build(const vector<int>& freqs) {
-	priority_queue<HCNode> pq;
-
+	priority_queue<HCNode*> pq;
 
 	// add all nodes
 	cout << freqs.size() << endl;
@@ -22,11 +21,11 @@ void HCTree::build(const vector<int>& freqs) {
 		// if letter has a frequency
 		if (freqs[i] != 0) {
 			// Make into node
-			HCNode newNode = HCNode(freqs[i], i);
+			HCNode* newNode = new HCNode(freqs[i], i);
 			// add node pointer to priority queue
 			pq.push(newNode);
 			// add node pointer to leaves
-			leaves[i] = &newNode;
+			leaves[i] = newNode;
 		}
 	}
 	// TODO: Check if pq is empty or already contains only one element
@@ -34,32 +33,30 @@ void HCTree::build(const vector<int>& freqs) {
 		return;
 	}
 	if (pq.size() == 1) {
-		HCNode rootNode = pq.top();
-		root = &rootNode;
+		root = pq.top();
 		return;
 	}
 
 	//bool kk = *leaves[98] < *leaves[99];
-	
+
 	// Make tree
 	while (pq.size() > 1) {
 		// Get lowest frequency nodes
-		HCNode left = pq.top();
+		HCNode* left = pq.top();
 		pq.pop();
-		HCNode right = pq.top();
+		HCNode* right = pq.top();
 		pq.pop();
 		// Add their frequencies to a new internal node
-		HCNode iNode = HCNode(left.count + right.count,NULL);
-		
+		HCNode* iNode = new HCNode(left->count + right->count, NULL);
+
 		pq.push(iNode);
 
-		left.p = &iNode;
-		right.p = &iNode;
-		iNode.c0 = &left;
-		iNode.c1 = &right;
+		left->p = iNode;
+		right->p = iNode;
+		iNode->c0 = left;
+		iNode->c1 = right;
 	}
-	HCNode rootNode = pq.top();
-	root = &rootNode;
+	root = pq.top();
 }
 
 /** Write to the given ofstream
