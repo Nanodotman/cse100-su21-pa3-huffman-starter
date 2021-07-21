@@ -14,6 +14,7 @@ using namespace std;
 void HCTree::build(const vector<int>& freqs) {
 	priority_queue<HCNode*> pq;
 
+
 	// add all nodes
 	cout << freqs.size() << endl;
 	for (unsigned int i = 0; i < freqs.size(); i++) {
@@ -23,7 +24,7 @@ void HCTree::build(const vector<int>& freqs) {
 			// Make into node
 			HCNode* newNode = new HCNode(freqs[i], i);
 			// add node pointer to priority queue
-			pq.emplace(newNode);
+			pq.push(newNode);
 			// add node pointer to leaves
 			leaves[i] = newNode;
 		}
@@ -36,6 +37,8 @@ void HCTree::build(const vector<int>& freqs) {
 		root = pq.top();
 		return;
 	}
+
+	bool kk = *leaves[98] < *leaves[99];
 	
 	// Make tree
 	while (pq.size() > 1) {
@@ -97,14 +100,14 @@ int HCTree::decode(ifstream& in) const {
 	// create a pointer that starts at the root
 	HCNode* curr = this->root;
 	
-	char byte = 0;
-	while (byte = in.get()) {
+	byte letter = 0;
+	while (letter = in.get()) {
 		// If current is a leaf, return code and reset curr to root.
 		if (curr->c0 == NULL) {
 			curr = this->root;
 			return curr->symbol;
 		}
-		if (byte == 0) {
+		if (letter == 0) {
 			curr = curr->c0;
 		} else {
 			curr = curr->c1;

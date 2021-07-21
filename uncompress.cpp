@@ -5,8 +5,8 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-	cout << "Executing compress..." << endl;
-	if (argc != 2)
+	cout << "Executing uncompress..." << endl;
+	if (argc != 3)
 	{
 		cout << "This program requires 2 aruments!" << endl;
 		return 1;
@@ -26,10 +26,6 @@ int main(int argc, char** argv) {
 		for (size_t i = 0; i < 256; i++) {
 			getline(infile, line);
 			value = stoi(line);
-			//infile.getline();
-			//stringstream value(line);
-			//int x = 0;
-			//value >> x;
 			freqs[i] = value;
 		}
 	}
