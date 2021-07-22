@@ -69,4 +69,6 @@ int main(int argc, char** argv) {
 	// Close files
 	infile.close();
 	outfile.close();
+
+	delete HTree;
 }
