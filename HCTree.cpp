@@ -35,8 +35,8 @@ void HCTree::build(const vector<int>& freqs) {
 		return;
 	}
 	if (pq.size() == 1) {
-root = pq.top();
-return;
+		root = pq.top();
+		return;
 	}
 
 	//bool kk = *leaves[98] < *leaves[99];
@@ -66,6 +66,7 @@ return;
 		pq.push(iNode);
 	}
 	root = pq.top();
+	pq.pop();
 }
 
 /** Write to the given ofstream
