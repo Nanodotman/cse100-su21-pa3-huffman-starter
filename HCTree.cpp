@@ -35,8 +35,8 @@ void HCTree::build(const vector<int>& freqs) {
 		return;
 	}
 	if (pq.size() == 1) {
-		root = pq.top();
-		return;
+root = pq.top();
+return;
 	}
 
 	//bool kk = *leaves[98] < *leaves[99];
@@ -50,13 +50,13 @@ void HCTree::build(const vector<int>& freqs) {
 		HCNode* right = pq.top();
 		pq.pop();
 		// Add their frequencies to a new internal node
-		HCNode* iNode = new HCNode(left->count + right->count, NULL);
+		HCNode* iNode = new HCNode(left->count + right->count, 0);
 		left->p = iNode;
 		right->p = iNode;
 
 		iNode->c0 = left;
 		iNode->c1 = right;
-		
+
 		//if (left->symbol != 0) { // not an internal node
 		//	leaves[left->symbol] = left;
 		//}
@@ -87,7 +87,7 @@ void HCTree::encode(byte symbol, ofstream& out) const {
 			out << 0;
 			return;
 		}
-	
+
 		// Write code to Stack
 		while (curr->p != NULL) {
 			if (curr->p->c0 == curr) {
@@ -114,7 +114,7 @@ void HCTree::encode(byte symbol, ofstream& out) const {
 int HCTree::decode(ifstream& in) const {
 	// create a pointer that starts at the root
 	HCNode* curr = this->root;
-	
+
 	char bit;
 	while ((bit = in.get()) != -1) {
 		if (curr->c0 == NULL) {
@@ -123,7 +123,8 @@ int HCTree::decode(ifstream& in) const {
 		// If current is a leaf, return asciiVal
 		if (bit == '0') {
 			curr = curr->c0;
-		} else {
+		}
+		else {
 			curr = curr->c1;
 		}
 		if (curr->c0 == NULL) {
@@ -132,3 +133,15 @@ int HCTree::decode(ifstream& in) const {
 	}
 	return -2;
 }
+
+void deleteTree(HCNode* rootNode) {
+	if (rootNode != NULL) {
+		deleteTree(rootNode->c0);
+		deleteTree(rootNode->c1);
+		delete rootNode;
+	}
+}
+
+HCTree::~HCTree() {
+	deleteTree(root);
+};
