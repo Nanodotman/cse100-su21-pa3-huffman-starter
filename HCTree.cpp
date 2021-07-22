@@ -2,31 +2,10 @@
 #include <iostream>
 #include <queue>
 #include <stack>
+#include <functional>
+#include <string>
 
 using namespace std;
-
-void HCTree::getLeaves(HCNode* curr) {
-	// if node is null, return
-	if (!curr) {
-		return;
-	}
-
-	// if node is leaf node, print its data   
-	if (!curr->c0) {
-		leaves[curr->symbol] = curr;
-		return;
-	}
-
-	// if left child exists, check for leaf
-	// recursively
-	if (curr->c0)
-		getLeaves(curr->c0);
-
-	// if right child exists, check for leaf
-	// recursively
-	if (curr->c1)
-		getLeaves(curr->c1);
-}
 
 /** Use the Huffman algorithm to build a Huffman coding trie.
 *  PRECONDITION: freqs is a vector of ints, such that freqs[i] is
@@ -35,20 +14,20 @@ void HCTree::getLeaves(HCNode* curr) {
 *  and leaves[i] points to the leaf node containing byte i.
 */
 void HCTree::build(const vector<int>& freqs) {
-	priority_queue<HCNode> pq;
+	priority_queue<HCNode*, vector<HCNode*>, std::function<bool(HCNode*, HCNode*)>> pq(comp);
 
 	// add all nodes
 	cout << freqs.size() << endl;
-	for (unsigned int i = 0; i < freqs.size(); i++) {
+	for (unsigned int i = 0; i < freqs.size(); i++) {	
 		cout << "letter " << i << endl;
 		// if letter has a frequency
 		if (freqs[i] != 0) {
 			// Make into node
 			HCNode* newNode = new HCNode(freqs[i], i);
 			// add node pointer to priority queue
-			pq.push(*newNode);
+			pq.push(newNode);
 			// add node pointer to leaves
-			//leaves[i] = newNode;
+			leaves[i] = newNode;
 		}
 	}
 	// TODO: Check if pq is empty or already contains only one element
@@ -56,7 +35,7 @@ void HCTree::build(const vector<int>& freqs) {
 		return;
 	}
 	if (pq.size() == 1) {
-		root = new HCNode(pq.top());
+		root = pq.top();
 		return;
 	}
 
@@ -66,28 +45,27 @@ void HCTree::build(const vector<int>& freqs) {
 	while (pq.size() > 1) {
 		// Get lowest frequency nodes
 		//cout << "making tree.." << endl;
-		HCNode* left = new HCNode(pq.top());
+		HCNode* left = pq.top();
 		pq.pop();
-		HCNode* right = new HCNode(pq.top());
+		HCNode* right = pq.top();
 		pq.pop();
 		// Add their frequencies to a new internal node
-		left->p = new HCNode(left->count + right->count, 0);
-		right->p = left->p;
+		HCNode* iNode = new HCNode(left->count + right->count, NULL);
+		left->p = iNode;
+		right->p = iNode;
 
-		left->p->c0 = left;
-		left->p->c1 = right;
+		iNode->c0 = left;
+		iNode->c1 = right;
 		
-		if (left->symbol != 0) { // not an internal node
-			leaves[left->symbol] = left;
-		}
-		if (right->symbol != 0) { // not an internal node
-			leaves[right->symbol] = right;
-		}
-		pq.push(*(left->p));
-		
+		//if (left->symbol != 0) { // not an internal node
+		//	leaves[left->symbol] = left;
+		//}
+		//if (right->symbol != 0) { // not an internal node
+		//	leaves[right->symbol] = right;
+		//}
+		pq.push(iNode);
 	}
-	root = new HCNode(pq.top());
-	getLeaves(root);
+	root = pq.top();
 }
 
 /** Write to the given ofstream
@@ -132,19 +110,16 @@ int HCTree::decode(ifstream& in) const {
 	HCNode* curr = this->root;
 	
 	char bit;
-	int asciiVal;
-	while ((bit = in.get()) != EOF) {
+	while ((bit = in.get()) != -1) {
 		// If current is a leaf, return asciiVal
-		if (curr->c0 == NULL) {
-			asciiVal = curr->symbol;
-			return asciiVal;
-		}
-		if ((int)bit == 0) {
+		if (bit == '0') {
 			curr = curr->c0;
 		} else {
 			curr = curr->c1;
 		}
+		if (curr->c0 == NULL) {
+			return curr->symbol;
+		}
 	}
-
-	return 1;
+	return -2;
 }

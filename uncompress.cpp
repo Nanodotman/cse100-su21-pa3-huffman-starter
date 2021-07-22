@@ -5,7 +5,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-	cout << "Executing uncompress..." << endl;
+	//cout << "Executing uncompress..." << endl;
 	if (argc != 3)
 	{
 		cout << "This program requires 2 aruments!" << endl;
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
 	// Build Huffman Tree
 	HCTree* HTree = new HCTree();
-	//HTree->build(freqs);
+	HTree->build(freqs);
 
 	// Open outfile
 	ofstream outfile;
@@ -47,6 +47,9 @@ int main(int argc, char** argv) {
 	if (infile.is_open()) {
 		while (infile.is_open()) {
 			asciiVal = HTree->decode(infile);
+			if (asciiVal == -2) { 
+				break; 
+			}
 			c = char(asciiVal);
 			outfile << c;
 		}
