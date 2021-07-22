@@ -71,7 +71,7 @@ void HCTree::build(const vector<int>& freqs) {
 		HCNode* right = new HCNode(pq.top());
 		pq.pop();
 		// Add their frequencies to a new internal node
-		left->p = new HCNode(left->count + right->count, NULL);
+		left->p = new HCNode(left->count + right->count, 0);
 		right->p = left->p;
 
 		left->p->c0 = left;
