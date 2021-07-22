@@ -17,7 +17,7 @@ void HCTree::build(const vector<int>& freqs) {
 	priority_queue<HCNode*, vector<HCNode*>, std::function<bool(HCNode*, HCNode*)>> pq(comp);
 
 	// add all nodes
-	cout << freqs.size() << endl;
+	// cout << freqs.size() << endl;
 	for (unsigned int i = 0; i < freqs.size(); i++) {	
 		//cout << "letter " << i << endl;
 		// if letter has a frequency
