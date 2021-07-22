@@ -4,10 +4,22 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-	cout << "Executing compress..." << endl;
+	//cout << "Executing compress..." << endl;
 	if (argc != 3) {
 		cout << "This program requires 2 arguments!" << endl;
 		return 1;
+	}
+
+
+	// Open infile
+	ifstream infile;
+	infile.open(argv[1], ios::binary);
+	
+	if (infile.peek() == std::ifstream::traits_type::eof()) {
+		ofstream outfile;
+		outfile.open(argv[2], ios::out);
+		outfile.close();
+		return -1;
 	}
 
 	// Create vector with freqs
@@ -16,9 +28,6 @@ int main(int argc, char** argv) {
 		freqs[i] = 0;
 	}
 
-	// Open infile
-	ifstream infile;
-	infile.open(argv[1], ios::binary);
 	// read infile
 	int input;
 	if (infile.is_open()) {

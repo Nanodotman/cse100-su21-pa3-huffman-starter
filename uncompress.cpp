@@ -18,6 +18,14 @@ int main(int argc, char** argv) {
 	// Open infile
 	ifstream infile;
 	infile.open(argv[1], ios::binary);
+
+	if (infile.peek() == std::ifstream::traits_type::eof()) {
+		ofstream outfile;
+		outfile.open(argv[2], ios::out);
+		outfile.close();
+		return -1;
+	}
+
 	// read infile
 	string line;
 	int value;

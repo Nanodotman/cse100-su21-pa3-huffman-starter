@@ -7,7 +7,7 @@ using namespace std;
 
 bool comp(HCNode* one, HCNode* other) {
         // if counts are different, just compare counts
-        cout << "Comparing less than" << endl;
+        //cout << "Comparing less than" << endl;
         if (one->count != other->count) {
             return one->count > other->count;
         }
