@@ -44,7 +44,7 @@ public:
      */
     void build(const vector<int>& freqs);
 
-    string getCode(byte b);
+    void getLeaves(HCNode* curr);
 
     /** Write to the given ofstream
      *  the sequence of bits (as ASCII) coding the given symbol.

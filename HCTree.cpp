@@ -5,6 +5,29 @@
 
 using namespace std;
 
+void HCTree::getLeaves(HCNode* curr) {
+	// if node is null, return
+	if (!curr) {
+		return;
+	}
+
+	// if node is leaf node, print its data   
+	if (!curr->c0) {
+		leaves[curr->symbol] = curr;
+		return;
+	}
+
+	// if left child exists, check for leaf
+	// recursively
+	if (curr->c0)
+		getLeaves(curr->c0);
+
+	// if right child exists, check for leaf
+	// recursively
+	if (curr->c1)
+		getLeaves(curr->c1);
+}
+
 /** Use the Huffman algorithm to build a Huffman coding trie.
 *  PRECONDITION: freqs is a vector of ints, such that freqs[i] is
 *  the frequency of occurrence of byte i in the message.
@@ -12,7 +35,7 @@ using namespace std;
 *  and leaves[i] points to the leaf node containing byte i.
 */
 void HCTree::build(const vector<int>& freqs) {
-	priority_queue<HCNode*> pq;
+	priority_queue<HCNode> pq;
 
 	// add all nodes
 	cout << freqs.size() << endl;
@@ -23,9 +46,9 @@ void HCTree::build(const vector<int>& freqs) {
 			// Make into node
 			HCNode* newNode = new HCNode(freqs[i], i);
 			// add node pointer to priority queue
-			pq.push(newNode);
+			pq.push(*newNode);
 			// add node pointer to leaves
-			leaves[i] = newNode;
+			//leaves[i] = newNode;
 		}
 	}
 	// TODO: Check if pq is empty or already contains only one element
@@ -33,7 +56,7 @@ void HCTree::build(const vector<int>& freqs) {
 		return;
 	}
 	if (pq.size() == 1) {
-		root = pq.top();
+		root = new HCNode(pq.top());
 		return;
 	}
 
@@ -42,21 +65,29 @@ void HCTree::build(const vector<int>& freqs) {
 	// Make tree
 	while (pq.size() > 1) {
 		// Get lowest frequency nodes
-		HCNode* left = pq.top();
+		//cout << "making tree.." << endl;
+		HCNode* left = new HCNode(pq.top());
 		pq.pop();
-		HCNode* right = pq.top();
+		HCNode* right = new HCNode(pq.top());
 		pq.pop();
 		// Add their frequencies to a new internal node
-		HCNode* iNode = new HCNode(left->count + right->count, NULL);
+		left->p = new HCNode(left->count + right->count, NULL);
+		right->p = left->p;
 
-		pq.push(iNode);
-
-		left->p = iNode;
-		right->p = iNode;
-		iNode->c0 = left;
-		iNode->c1 = right;
+		left->p->c0 = left;
+		left->p->c1 = right;
+		
+		if (left->symbol != 0) { // not an internal node
+			leaves[left->symbol] = left;
+		}
+		if (right->symbol != 0) { // not an internal node
+			leaves[right->symbol] = right;
+		}
+		pq.push(*(left->p));
+		
 	}
-	root = pq.top();
+	root = new HCNode(pq.top());
+	getLeaves(root);
 }
 
 /** Write to the given ofstream
@@ -70,6 +101,7 @@ void HCTree::encode(byte symbol, ofstream& out) const {
 	HCNode* curr = NULL;
 	byte i = (byte)symbol;
 	if (leaves[i] != NULL) {
+		//cout << "encoding..." << endl;
 		curr = leaves[i];
 	
 		// Write code to Stack

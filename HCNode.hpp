@@ -26,15 +26,18 @@ public:
       HCNode* p = 0)
         : count(count), symbol(symbol), c0(c0), c1(c1), p(p) { }
 
+    HCNode(const HCNode& otherNode)
+        : count(otherNode.count), symbol(otherNode.symbol), c0(otherNode.c0), c1(otherNode.c1), p(otherNode.p) { }
+
     /** Less-than comparison, so HCNodes will work in std::priority_queue
      *  We want small counts to have high priority.
      *  And we want to break ties deterministically.
      *  @param other The other HCNode to compare with.
      *  @return result of comparison
      */
-    bool operator<(const HCNode& other) {
+    bool operator<(const HCNode& other) const {
         // if counts are different, just compare counts
-        cout << "Comparing less than" << endl;
+        //cout << "Comparing less than" << endl;
         if (this->count != other.count) {
             return this->count > other.count;
         }
