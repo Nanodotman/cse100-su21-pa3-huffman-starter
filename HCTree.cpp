@@ -78,9 +78,15 @@ void HCTree::encode(byte symbol, ofstream& out) const {
 	stack<int> retStack;
 	HCNode* curr = NULL;
 	byte i = (byte)symbol;
+
 	if (leaves[i] != NULL) {
 		//cout << "encoding..." << endl;
 		curr = leaves[i];
+
+		if (curr == root) {
+			out << 0;
+			return;
+		}
 	
 		// Write code to Stack
 		while (curr->p != NULL) {
@@ -111,6 +117,9 @@ int HCTree::decode(ifstream& in) const {
 	
 	char bit;
 	while ((bit = in.get()) != -1) {
+		if (curr->c0 == NULL) {
+			return curr->symbol;
+		}
 		// If current is a leaf, return asciiVal
 		if (bit == '0') {
 			curr = curr->c0;
